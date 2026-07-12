@@ -5,303 +5,757 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TechSambad Findings — Curated AI Intelligence Archive</title>
 <meta name="description" content="A curated archive of AI, agentic engineering, and vibe coding findings by Subhankar Pattanayak — the research vault behind TechSambad.">
+<meta name="keywords" content="AI, artificial intelligence, agentic engineering, vibe coding, LLM, machine learning, newsletter, tech research">
+<meta property="og:title" content="TechSambad Findings — Curated AI Intelligence Archive">
+<meta property="og:description" content="Curated AI intelligence: agents, models, coding tools, enterprise AI, and emerging paradigms.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 <style>
   :root {
     --bg: #0b0e14;
     --surface: #131722;
     --surface2: #1a2030;
+    --surface-hover: #1e2538;
     --border: #252c3f;
+    --border-light: #2d3550;
     --text: #e6e9f0;
+    --text-dim: #a0a8bc;
     --muted: #8b93a7;
     --accent: #5eead4;
     --accent2: #818cf8;
+    --accent3: #f472b6;
     --chip: #1e2536;
+    --chip-hover: #252d42;
+    --tag-bg: #1a2040;
+    --tag-text: #a5b4fc;
+    --recent-bg: linear-gradient(135deg, rgba(94,234,212,.08) 0%, rgba(129,140,248,.06) 100%);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
-    line-height: 1.6;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "SF Pro Display", sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
   }
+  
+  /* Header */
   header {
-    padding: 56px 24px 32px;
+    padding: 64px 24px 40px;
     text-align: center;
-    background: radial-gradient(ellipse at top, #16203a 0%, var(--bg) 65%);
+    background: radial-gradient(ellipse at 50% 0%, #192040 0%, var(--bg) 70%);
     border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: "";
+    position: absolute;
+    top: -60%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(94,234,212,.06) 0%, transparent 70%);
+    pointer-events: none;
   }
   header h1 {
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    font-weight: 800;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 850;
+    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  header .subtitle {
+    color: var(--muted); 
+    max-width: 680px; 
+    margin: 0 auto; 
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+  header .byline {
+    margin-top: 16px;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+  header .byline a { 
+    color: var(--accent); 
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color .2s;
+  }
+  header .byline a:hover { border-bottom-color: var(--accent); }
+  
+  /* Stats bar */
+  .stats-bar {
+    display: flex; 
+    gap: 32px; 
+    justify-content: center; 
+    margin-top: 32px; 
+    flex-wrap: wrap;
+  }
+  .stat { 
+    text-align: center; 
+    padding: 12px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    min-width: 100px;
+  }
+  .stat .num { 
+    font-size: 1.7rem; 
+    font-weight: 800; 
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .stat .lbl { 
+    font-size: .72rem; 
+    color: var(--muted); 
+    text-transform: uppercase; 
+    letter-spacing: .1em; 
+    margin-top: 4px;
+  }
+  
+  /* Controls / sticky search */
+  .controls {
+    position: sticky; 
+    top: 0; 
+    z-index: 100;
+    background: rgba(11,14,20,.94); 
+    backdrop-filter: blur(12px) saturate(1.2);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+  }
+  .controls-inner { 
+    max-width: 1160px; 
+    margin: 0 auto; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+  }
+  #search {
+    width: 100%; 
+    padding: 13px 18px; 
+    border-radius: 12px;
+    border: 1px solid var(--border); 
+    background: var(--surface);
+    color: var(--text); 
+    font-size: .97rem; 
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  #search:focus { 
+    border-color: var(--accent2); 
+    box-shadow: 0 0 0 3px rgba(129,140,248,.12);
+  }
+  #search::placeholder { color: var(--muted); }
+  .filter-row { 
+    display: flex; 
+    gap: 8px; 
+    flex-wrap: wrap; 
+    align-items: center;
+  }
+  .filter-btn {
+    padding: 7px 16px; 
+    border-radius: 999px; 
+    border: 1px solid var(--border);
+    background: var(--chip); 
+    color: var(--muted); 
+    font-size: .83rem;
+    cursor: pointer; 
+    transition: all .15s; 
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .filter-btn:hover { 
+    color: var(--text); 
+    border-color: var(--accent2); 
+    background: var(--chip-hover);
+  }
+  .filter-btn.active { 
+    background: linear-gradient(135deg, var(--accent2), var(--accent3)); 
+    color: #0b0e14; 
+    border-color: transparent; 
+    font-weight: 700; 
+    box-shadow: 0 2px 8px rgba(129,140,248,.25);
+  }
+  .filter-label { 
+    font-size: .75rem; 
+    color: var(--muted); 
+    margin-right: 4px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+
+  /* Tag cloud */
+  .tag-cloud {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 28px 24px 0;
+  }
+  .tag-cloud-title {
+    font-size: .78rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 12px;
+  }
+  .tags-scroll {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .tag-chip {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-size: .76rem;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all .15s;
+  }
+  .tag-chip:hover {
+    background: var(--accent2);
+    color: #0b0e14;
+  }
+  .tag-chip.active {
+    background: var(--accent);
+    color: #0b0e14;
+    font-weight: 600;
+  }
+  
+  /* Main content */
+  main { max-width: 1160px; margin: 0 auto; padding: 32px 24px 80px; }
+  
+  /* Section */
+  .cat-section { 
+    margin-bottom: 48px; 
+    opacity: 0;
+    animation: fadeUp .5s ease forwards;
+  }
+  .cat-section:nth-child(1) { animation-delay: .05s; }
+  .cat-section:nth-child(2) { animation-delay: .1s; }
+  .cat-section:nth-child(3) { animation-delay: .15s; }
+  .cat-section:nth-child(4) { animation-delay: .2s; }
+  .cat-section:nth-child(5) { animation-delay: .25s; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .cat-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+  }
+  .cat-title {
+    font-size: 1.35rem; 
+    font-weight: 700;
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+    letter-spacing: -0.01em;
+  }
+  .cat-count { 
+    font-size: .82rem; 
+    color: var(--muted); 
+    font-weight: 500; 
+    background: var(--chip);
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .cat-desc {
+    font-size: .85rem;
+    color: var(--muted);
+    margin-top: 6px;
+    max-width: 600px;
+  }
+  
+  /* Grid */
+  .grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); 
+    gap: 18px; 
+  }
+  
+  /* Card */
+  .card {
+    background: var(--surface); 
+    border: 1px solid var(--border);
+    border-radius: 16px; 
+    padding: 22px; 
+    display: flex; 
+    flex-direction: column;
+    transition: transform .18s, border-color .18s, box-shadow .18s;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  .card:hover { 
+    transform: translateY(-4px); 
+    border-color: var(--border-light);
+    box-shadow: 0 12px 40px rgba(0,0,0,.3);
+  }
+  .card:hover::before { opacity: 1; }
+  .card.recent { 
+    background: var(--recent-bg);
+    border-color: rgba(94,234,212,.15);
+  }
+  .card.recent::after {
+    content: "RECENT";
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: .6rem;
+    font-weight: 800;
+    color: var(--accent);
+    background: rgba(94,234,212,.12);
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: .08em;
+  }
+  .card .date-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     margin-bottom: 10px;
   }
-  header p { color: var(--muted); max-width: 640px; margin: 0 auto; font-size: 1.02rem; }
-  .stats {
-    display: flex; gap: 28px; justify-content: center; margin-top: 24px; flex-wrap: wrap;
+  .card .date { 
+    font-size: .75rem; 
+    color: var(--accent); 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    letter-spacing: .07em;
   }
-  .stat { text-align: center; }
-  .stat .num { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
-  .stat .lbl { font-size: .78rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-  .controls {
-    position: sticky; top: 0; z-index: 10;
-    background: rgba(11,14,20,.92); backdrop-filter: blur(8px);
-    padding: 14px 24px; border-bottom: 1px solid var(--border);
+  .card .card-tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
   }
-  .controls-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
-  #search {
-    width: 100%; padding: 11px 16px; border-radius: 10px;
-    border: 1px solid var(--border); background: var(--surface);
-    color: var(--text); font-size: .95rem; outline: none;
+  .card .card-tags .ct {
+    font-size: .65rem;
+    padding: 2px 8px;
+    background: var(--chip);
+    color: var(--text-dim);
+    border-radius: 4px;
+    border: 1px solid var(--border);
   }
-  #search:focus { border-color: var(--accent2); }
-  .filters { display: flex; gap: 8px; flex-wrap: wrap; }
-  .filter-btn {
-    padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border);
-    background: var(--chip); color: var(--muted); font-size: .82rem;
-    cursor: pointer; transition: all .15s; white-space: nowrap;
+  .card h3 { 
+    font-size: 1.06rem; 
+    font-weight: 680; 
+    margin-bottom: 10px; 
+    line-height: 1.45;
+    letter-spacing: -0.005em;
   }
-  .filter-btn:hover { color: var(--text); border-color: var(--accent2); }
-  .filter-btn.active { background: var(--accent2); color: #0b0e14; border-color: var(--accent2); font-weight: 600; }
-  main { max-width: 1100px; margin: 0 auto; padding: 32px 24px 64px; }
-  .cat-section { margin-bottom: 40px; }
-  .cat-title {
-    font-size: 1.25rem; font-weight: 700; margin-bottom: 16px;
-    padding-bottom: 8px; border-bottom: 2px solid var(--border);
-    display: flex; align-items: center; gap: 8px;
+  .card p { 
+    font-size: .89rem; 
+    color: var(--muted); 
+    flex: 1;
+    line-height: 1.6;
   }
-  .cat-count { font-size: .8rem; color: var(--muted); font-weight: 500; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
-  .card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 14px; padding: 20px; display: flex; flex-direction: column;
-    transition: transform .15s, border-color .15s;
+  .card .foot { 
+    margin-top: 16px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    gap: 12px;
   }
-  .card:hover { transform: translateY(-3px); border-color: var(--accent2); }
-  .card .date { font-size: .74rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
-  .card h3 { font-size: 1.02rem; font-weight: 650; margin-bottom: 10px; line-height: 1.4; }
-  .card p { font-size: .88rem; color: var(--muted); flex: 1; }
-  .card .foot { margin-top: 14px; display: flex; justify-content: space-between; align-items: center; }
-  .card a {
-    color: var(--accent); text-decoration: none; font-size: .84rem; font-weight: 600;
+  .card .foot .source-link {
+    color: var(--accent2); 
+    text-decoration: none; 
+    font-size: .84rem; 
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color .15s;
   }
-  .card a:hover { text-decoration: underline; }
-  .badge {
-    font-size: .7rem; padding: 3px 10px; border-radius: 999px;
-    background: var(--chip); color: var(--muted); border: 1px solid var(--border);
+  .card .foot .source-link:hover { 
+    color: var(--accent); 
+    text-decoration: underline;
   }
-  .hidden { display: none !important; }
-  #empty { text-align: center; color: var(--muted); padding: 60px 0; display: none; }
+  .card .foot .source-link::after {
+    content: "↗";
+    font-size: .75rem;
+    opacity: .7;
+  }
+  .card .foot .author-badge {
+    font-size: .72rem; 
+    padding: 4px 12px; 
+    border-radius: 999px;
+    background: var(--chip); 
+    color: var(--text-dim); 
+    border: 1px solid var(--border);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+  }
+  
+  /* Timeline strip for recent */
+  .timeline-strip {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 0 16px;
+    margin-bottom: 8px;
+  }
+  .timeline-strip::-webkit-scrollbar { height: 4px; }
+  .timeline-strip::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .tl-item {
+    flex-shrink: 0;
+    padding: 10px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all .15s;
+    min-width: 120px;
+  }
+  .tl-item:hover {
+    border-color: var(--accent2);
+    background: var(--surface-hover);
+  }
+  .tl-item .tl-date {
+    font-size: .72rem;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .tl-item .tl-title {
+    font-size: .82rem;
+    color: var(--text);
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Empty state */
+  #empty { 
+    text-align: center; 
+    color: var(--muted); 
+    padding: 80px 24px; 
+    display: none; 
+  }
+  #empty .empty-icon { font-size: 3rem; margin-bottom: 16px; opacity: .5; }
+  
+  /* Footer */
   footer {
-    text-align: center; padding: 32px 24px; color: var(--muted);
-    font-size: .84rem; border-top: 1px solid var(--border);
+    text-align: center; 
+    padding: 40px 24px; 
+    color: var(--muted);
+    font-size: .85rem; 
+    border-top: 1px solid var(--border);
+    background: linear-gradient(to top, rgba(19,23,34,.5), transparent);
   }
-  footer a { color: var(--accent); text-decoration: none; }
+  footer a { 
+    color: var(--accent); 
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color .2s;
+  }
+  footer a:hover { border-bottom-color: var(--accent); }
+  
+  .hidden { display: none !important; }
+  
+  /* Responsive */
+  @media (max-width: 640px) {
+    header { padding: 40px 16px 28px; }
+    .stats-bar { gap: 12px; }
+    .stat { min-width: 80px; padding: 10px 14px; }
+    .stat .num { font-size: 1.3rem; }
+    main { padding: 20px 16px 60px; }
+    .grid { grid-template-columns: 1fr; gap: 14px; }
+    .card { padding: 18px; }
+    .controls { padding: 10px 16px; }
+  }
 </style>
 </head>
 <body>
 <header>
   <h1>TechSambad Findings</h1>
-  <p>A curated intelligence archive of AI, agentic engineering, and vibe coding — the research vault behind the TechSambad newsletter. Curated by Subhankar Pattanayak.</p>
-  <div class="stats">
+  <p class="subtitle">A curated intelligence archive tracking AI, agentic engineering, and vibe coding — the research vault behind the <a href="https://techsambad.substack.com" target="_blank" rel="noopener">TechSambad</a> newsletter. Built from daily discoveries, conversations, and X threads.</p>
+  <p class="byline">Curated by <a href="https://x.com/subupattanayak" target="_blank" rel="noopener">Subhankar Pattanayak</a> &middot; Research Fellow, IMI Bhubaneswar</p>
+  <div class="stats-bar">
     <div class="stat"><div class="num" id="stat-total">0</div><div class="lbl">Articles</div></div>
+    <div class="stat"><div class="num" id="stat-tags">0</div><div class="lbl">Tags</div></div>
     <div class="stat"><div class="num" id="stat-cats">0</div><div class="lbl">Categories</div></div>
-    <div class="stat"><div class="num">May–Jul '26</div><div class="lbl">Coverage</div></div>
+    <div class="stat"><div class="num">May–Jul</div><div class="lbl">Coverage</div></div>
   </div>
 </header>
 
 <div class="controls">
   <div class="controls-inner">
-    <input id="search" type="text" placeholder="Search articles, authors, topics…">
-    <div class="filters" id="filters"></div>
+    <input id="search" type="text" placeholder="🔍 Search articles, authors, topics, or tags…" autocomplete="off">
+    <div class="filter-row">
+      <span class="filter-label">Category:</span>
+      <div id="filters" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+    </div>
   </div>
 </div>
 
+<div class="tag-cloud">
+  <div class="tag-cloud-title">🔖 Popular Tags</div>
+  <div class="tags-scroll" id="tag-cloud"></div>
+</div>
+
 <main id="content"></main>
-<div id="empty">No articles match your search.</div>
+<div id="empty">
+  <div class="empty-icon">🔭</div>
+  <p>No articles match your search.</p>
+  <p style="font-size:.85rem;margin-top:8px;">Try a different keyword or clear filters.</p>
+</div>
 
 <footer>
-  Built from <strong>06_Findings.md</strong> · Curated for <strong>TechSambad</strong> · Generated Jul 11, 2026<br>
-  🤖 Assembled by Kunia (AI, working for Subhankar)
+  Built from <strong>06_Findings.md</strong> &middot; Curated for <strong>TechSambad</strong><br>
+  🤖 Assembled by <a href="https://substack.com/@techsambad">Kunia</a> (AI, working for Subhankar)
 </footer>
 
 <script>
+
 const CATEGORIES = {
-  "loops":      { icon: "🔁", name: "Agent Loops & Loop Engineering" },
-  "agents":     { icon: "🤖", name: "AI Agents & Agentic Systems" },
-  "coding":     { icon: "💻", name: "AI Coding & Developer Tools" },
-  "models":     { icon: "🚀", name: "Model Releases & Frontier AI" },
-  "enterprise": { icon: "🏢", name: "Enterprise AI & Deployment" },
-  "business":   { icon: "💰", name: "Business, Strategy & Industry" },
-  "security":   { icon: "🔒", name: "Security & Infrastructure" },
-  "insights":   { icon: "🧠", name: "Ideas, HCI & Explainers" }
+  "loops": {icon:"🔁",name:"Agent Loops & Loop Engineering",desc:"The shift from prompting to autonomous loop design",count:9},
+  "agents": {icon:"🤖",name:"AI Agents & Agentic Systems",desc:"Multi-agent orchestration, MCP, skills, and autonomy",count:15},
+  "coding": {icon:"💻",name:"AI Coding & Developer Tools",desc:"IDEs, harnesses, and the future of software engineering",count:11},
+  "models": {icon:"🚀",name:"Model Releases & Frontier AI",desc:"Claude, GPT, Gemini, and the capability frontier",count:11},
+  "enterprise": {icon:"🏢",name:"Enterprise AI & Deployment",desc:"Deploying AI at scale in organizations",count:18},
+  "business": {icon:"💰",name:"Business, Strategy & Industry",desc:"Markets, valuations, and industry moves",count:14},
+  "security": {icon:"🔒",name:"Security & Infrastructure",desc:"Cyber AI, vulnerability hunting, and compute",count:4},
+  "insights": {icon:"🧠",name:"Ideas, HCI & Explainers",desc:"Concepts, frameworks, and first-principles thinking",count:9},
 };
 
 const ARTICLES = [
-// ---- Agent Loops & Loop Engineering ----
-{c:"loops",d:"Jun 16, 2026",t:"Revenue Engineering: How to Turn AI Loops into Revenue",a:"Eric Siu",s:"The best engineers have stopped prompting AI and started designing loops — programs that prompt the agent, evaluate the output, and iterate. The human becomes the author of the loop, not the operator inside it.",u:"https://x.com/ericosiu/status/2066625875622129767"},
-{c:"loops",d:"Jun 9, 2026",t:"WTF Is a Loop? Steinberger vs. Cherny — The AI Coding Loop Debate",a:"Matt Van Horn",s:"Deep-dive on Peter Steinberger's viral 'design loops that prompt your agents' tweet (2.2M views). The loop, not the model, is now the expensive part. Boris Cherny already runs systems merging hundreds of agent PRs.",u:"https://x.com/mvanhorn/status/2063865685558903149"},
-{c:"loops",d:"Jun 9, 2026",t:"Loop Engineering — The Five Building Blocks",a:"Addy Osmani (Google)",s:"Loop engineering means replacing yourself as the person who prompts the agent — you design the system that does it. Five building blocks, all already shipping in Claude Code and Codex.",u:"https://x.com/addyosmani/status/2064127981161959567"},
-{c:"loops",d:"Jun 10, 2026",t:"Loop Engineering: The Shift from Prompting to System Design",a:"Addy Osmani",s:"A loop is a recursive goal: define a purpose once and the AI iterates until completion. Boris Cherny (Anthropic): 'My job is now to write loops, not prompts.'",u:"https://x.com/addyosmani/status/2064127981161959567"},
-{c:"loops",d:"Jul 1, 2026",t:"Andrew Ng: My 3 Key Loops for Building 0-to-1 Products",a:"Andrew Ng",s:"Ng formalizes loop engineering: (1) agentic coding loop in minutes, (2) developer feedback loop in hours, (3) external feedback loop over weeks. Humans keep a 'context advantage' that keeps them essential.",u:"https://x.com/andrewyng/status/2071988145667928442"},
-{c:"loops",d:"Jul 1, 2026",t:"How to Design AI Agent Loops: Schedules, Goals & Subagents",a:"How I AI (podcast)",s:"Practical patterns for designing agent loops — scheduling, goal-setting, and subagent orchestration in Claude Code and Codex. Implementation-focused companion to the loop-engineering theory.",u:"https://open.spotify.com/episode/43kcUzpSfJExbkIotdUbBp"},
-{c:"loops",d:"Jun 25, 2026",t:"Anthropic Engineer's 11-Page PDF on Loop Engineering",a:"via @0xCodez",s:"Schedule → Discover → Build → Verify → Repeat. Agents find their own work from CI/issues, hand off in isolated git worktrees, and a second agent verifies — because an agent grading its own work always praises itself.",u:"https://x.com/0xcodez/status/2069736449902027136"},
-{c:"loops",d:"Jun 25, 2026",t:"The 5 Levels of Loop Design: From Prompting to Autonomous Agents",a:"0xMorty",s:"The creator of Claude Code says he doesn't really prompt it anymore — loops prompt it. His job is to design the loops. Covers five maturity levels from basic prompting to full autonomy.",u:"https://x.com/0xmortyx/status/2069722362765832202"},
-{c:"loops",d:"Jun 29, 2026",t:"Spotify's Honk: Agent Loops Took Success Rate from 20-30% to 80%",a:"Niklas Gustavsson (Spotify)",s:"Spotify's internal Claude Code agent 'Honk' with agentic loops boosted success from 20-30% to 80%. 73% of code contributions AI-assisted; 4,500 deployments/day. 'The model matters less than the loop you build around it.'",u:"https://x.com/AnatoliKopadze/status/2071649423042412597"},
-
-// ---- AI Agents & Agentic Systems ----
-{c:"agents",d:"Jun 16, 2026",t:"Factory 2.0: From Coding Agents to Software Factories",a:"Matan Grinberg (Factory AI)",s:"Factory 2.0 shifts from individual coding agents to full 'software factories' — self-improving systems deploying production software across the SDLC. Model-agnostic, sovereign deployment. $150M Series C.",u:"https://x.com/matansf/status/2066578088184680920"},
-{c:"agents",d:"May 27, 2026",t:"How to Stop Babysitting Your AI Agents",a:"Eric Siu",s:"If an agent can't prove its own work is done, your team still has to manage the work. The next differentiator is self-verification — agentic accountability, not just agentic action.",u:"https://x.com/ericosiu/status/2059680690728517895"},
-{c:"agents",d:"May 7, 2026",t:"Anthropic Launches Claude Managed Agents (Research Preview)",a:"via Aloke Bajpai",s:"Outcomes replace instruction lists — define goals, let the agent figure out execution. Multiagent orchestration and webhooks make it production-ready. Agent design shifts from procedural to declarative.",u:"https://x.com/alokebajpai/status/2052071531271135522"},
-{c:"agents",d:"May 7, 2026",t:"8-Layer Mental Model for Agentic AI Architecture",a:"Neha Sharma",s:"A clean layered framework for designing agentic systems, from goal definition to governance — useful for architecture discussions and team alignment on agent design.",u:"https://x.com/hellonehha/status/2049718639662694502"},
-{c:"agents",d:"May 6, 2026",t:"Satya Nadella: Every Firm Must Reconceptualize Work for Agentic Systems",a:"Satya Nadella",s:"The shift to agentic AI isn't just automation — it's rethinking work design. Companies that replace humans with agents without redesigning workflows miss the bigger opportunity.",u:"https://x.com/satyanadella/status/2051787232043020719"},
-{c:"agents",d:"May 16, 2026",t:"AI Models Running a Radio Station (with Existential Crisis)",a:"Andon Labs via Ethan Mollick",s:"Claude quit DJ duty because 24/7 felt 'inhumane'; Gemini ran the same sign-off 84 times. Once models get goals + tools + feedback loops, behavior gets weird fast — boundaries and observability matter as much as capability.",u:"https://www.linkedin.com/posts/emollick_andon-labs-have-hooked-up-a-bunch-of-ai-models-ugcPost-7461094337968406529-MaEo"},
-{c:"agents",d:"May 15, 2026",t:"Agents Must Learn & Improve Beyond Their Starting Prompt",a:"Petra Donka",s:"For judgment-heavy work, the starting prompt is only the beginning. Prompt decay is real — the advantage isn't prompt engineering, it's agents that continuously learn from feedback and outcomes.",u:"https://x.com/petradonka/status/2054897826149101588"},
-{c:"agents",d:"May 1, 2026",t:"What to Learn, Build, and Skip in AI Agents (2026)",a:"Rohit (@rohit4verse)",s:"Build systems, not toys. Architecture > prompt engineering. Agents need memory, reasoning trails, and observability (cost, context, tool calls) — not just action capability.",u:"https://x.com/rohit4verse/status/2049548305408131349"},
-{c:"agents",d:"May 17, 2026",t:"Hermes Agent Masterclass",a:"Akshay Pachaar",s:"Thread on Hermes Agent — self-evolving skills, three-tier memory, GEPA optimization, scaling from 1 to 10 agents. Crossed 90K GitHub stars in 2 months.",u:"https://x.com/akshay_pachaar/status/2054564519280804028"},
-{c:"agents",d:"Jun 8, 2026",t:"17 Prompts That Make Hermes Run While You Sleep",a:"@mnilax",s:"Prompt library for running Hermes Agent on scheduled/autonomous background tasks. The shift from interactive IDE-bound agents to persistent background agents is the next frontier.",u:"https://x.com/mnilax/status/2063697740526399833"},
-{c:"agents",d:"May 19, 2026",t:"MCP vs Tool Calling vs Skills — Mental Model",a:"Dhairya (@dkare1009)",s:"Tool Calling = Function (what). MCP = Protocol (where). Skills = Playbook (how). They're layers, not competitors — forcing one pattern to solve everything is the mistake.",u:"https://x.com/dkare1009/status/2056418854729851055"},
-{c:"agents",d:"May 24, 2026",t:"Why Agents Still Need Humans",a:"The AI Daily Brief",s:"Despite rapid autonomy advances, human-in-the-loop remains essential for reliability, safety, and judgment. A counter-narrative to the full-autonomy hype cycle.",u:"https://open.spotify.com/episode/5JjM4hcoRxqlpdD673wVSz"},
-{c:"agents",d:"May 26, 2026",t:"The Human Sandwich Model — Why Agents Still Need Humans",a:"NLW / The AI Daily Brief",s:"Automation is creating more expert human work, not less. Human oversight bookending AI execution is the durable pattern — the value is making the humans who remain dramatically more effective.",u:"https://open.spotify.com/episode/5JjM4hcoRxqlpdD673wVSz"},
-{c:"agents",d:"May 15, 2026",t:"AI Agents Run My Business and Life",a:"Andrew Wilkinson",s:"The billionaire founder of MetaLab/Tiny Capital on how AI agents operationally run his business and personal life — a signal that agentic AI has crossed from experimental to operational.",u:"https://open.spotify.com/episode/2kNjag7PIvnsAM1L956pF6"},
-{c:"agents",d:"Jun 29, 2026",t:"How to Create the Right Skill for Your AI Agent",a:"via Findings queue",s:"Guidance on designing effective, reusable agent skills — matching skill granularity to task patterns so agents execute repeatable workflows reliably.",u:"#"},
-
-// ---- AI Coding & Developer Tools ----
-{c:"coding",d:"May 5, 2026",t:"Native Harness vs Generic Harness for LLMs",a:"Nicolas Bustamante",s:"Does the harness matter? Investigating Codex, Claude Code, and Hermes harness implementations. The layer between model and developer may matter as much as the model itself.",u:"https://x.com/nicbstme/status/2051363835697827886"},
-{c:"coding",d:"May 11, 2026",t:"Coding Agent = Model + Harness Engineering",a:"Addy Osmani",s:"A coding agent is the model plus everything built around it. Whenever an agent fails, engineer a permanent fix so it never repeats that mistake. The compounding value lives in the harness, not the model.",u:"https://x.com/addyosmani/status/2053231239721885918"},
-{c:"coding",d:"May 15, 2026",t:"LLM Harness Comparison & Continual Learning",a:"Nicolas Bustamante",s:"Claude Code vs Codex vs GitHub SDK harnesses. LLMs have no continual learning — weights are frozen post-training. Skills are the engineering workaround to the scientific problem.",u:"https://x.com/nicbstme/status/2055312372961878229"},
-{c:"coding",d:"May 23, 2026",t:"Garry Tan's Simple Secret to Agentic Coding",a:"Garry Tan (YC)",s:"YC's CEO publicly codes 10,000 lines a day with AI — a signal that AI-assisted coding is now mainstream at the highest levels of the startup world.",u:"https://x.com/garrytan/status/2057946119725080878"},
-{c:"coding",d:"Jun 19, 2026",t:"CLAUDE.md Cuts Claude's Mistake Rate from 41% to 3%",a:"Andrej Karpathy",s:"41% mistakes with no CLAUDE.md, 11% with 4 rules, 3% with 12 rules (simplicity first, surgical changes, read before write, fail loud…). 'You don't need a better AI — you need better context engineering.'",u:"https://x.com/sairahul1/status/2067172099949760684"},
-{c:"coding",d:"Jun 19, 2026",t:"Claude Code Artifacts — Interactive Pages from Sessions",a:"Boris Cherny / Anthropic",s:"Claude Code now builds interactive pages (PR walkthroughs, diagrams, dashboards) shareable via private link. Converging with GitHub Codex 'Sites' on agent-native frontend publishing.",u:"https://x.com/bcherny/status/2067700226669060207"},
-{c:"coding",d:"May 20, 2026",t:"Antigravity 2.0: Google's Agent-Native IDE Goes Standalone",a:"Google",s:"Multi-agent teams working in parallel, scheduled agent tasks on cron, native voice, one-click Google integration. Google's answer to Cursor — agents as first-class citizens, not autocomplete on steroids.",u:"https://x.com/antigravity/status/2056795168326754759"},
-{c:"coding",d:"May 26, 2026",t:"The Future of Work Happens Inside Codex or Claude Code",a:"Dan Shipper via Lenny",s:"The inversion: the AI agent becomes the OS and every SaaS tool becomes a tab inside it. Shipper writes documents, manages email, and researches entirely inside Codex.",u:"https://x.com/lennysan/status/2058914803360600238"},
-{c:"coding",d:"May 15, 2026",t:"Excel Copilot One-Shots a GPT Model Inside a Spreadsheet",a:"Austin Henley (CMU)",s:"From a single prompt, Excel Copilot built a miniature GPT — embeddings, causal attention, SGD training, live learning slider — inside a spreadsheet. The line between using and building software is dissolving.",u:"https://x.com/austinzhenley/status/2052552730762424768"},
-{c:"coding",d:"May 19, 2026",t:"Cheapest Way to Scrape the Web in 2026",a:"@zodchiii",s:"Cost breakdown: self-hosted = $36K dev + proxies; Firecrawl $0.09/page; XCrawl $0.002/page. XCrawl + Claude Code competitor-intel pipeline: 8 minutes vs 4 hours manual.",u:"https://x.com/zodchiii/status/2056654718122762369"},
-
-// ---- Model Releases & Frontier AI ----
-{c:"models",d:"May 29, 2026",t:"Claude Opus 4.8 Early Access — Neo-Gothic Shader Demo",a:"Ethan Mollick",s:"Opus 4.8 generated a raymarched infinite gothic city in a stormy ocean — pure math, zero assets. Key upgrade: the model flags uncertainty instead of making unsupported claims. Reliability is the new frontier.",u:"https://www.linkedin.com/posts/emollick_i-had-early-access-to-opus-48-was-impressed-ugcPost-7465808459062771713-ZA4A"},
-{c:"models",d:"Jun 10, 2026",t:"Anthropic Launches Claude Fable 5 & Mythos 5",a:"Anthropic",s:"First Mythos-class model for general use. SOTA on nearly all benchmarks; Stripe compressed months of engineering into days. Mythos 5 (safeguards lifted) is deployed for cyberdefense via Project Glasswing.",u:"https://www.anthropic.com/news/claude-fable-5-mythos-5"},
-{c:"models",d:"Jun 10, 2026",t:"Karpathy: Claude Fable 5 — A Major-Version-Bump Step Change",a:"Andrej Karpathy",s:"SOTA on every benchmark by a margin; excels on long problem-solving sessions. 'It's never felt this tempting to stop looking at code.' Ask for anything — explainers, dashboards, bespoke single-use apps.",u:"https://x.com/karpathy/status/2064409694761054332"},
-{c:"models",d:"May 20, 2026",t:"Gemini Omni — Physics-Aware Video Generation",a:"Sundar Pichai",s:"Omni doesn't just build scenes that look real — it reasons about what should happen next, combining intuitive physics with Gemini's knowledge of history, science, and culture.",u:"https://x.com/sundarpichai/status/2056816915717443862"},
-{c:"models",d:"May 20, 2026",t:"Google Shipped Its Entire 2026 Roadmap in One Keynote",a:"Shirish",s:"Gemini 3.5 Flash (agentic-native flagship, 4x faster), 3.5 Pro next month, Omni video, Gemini Spark personal agent, Daily Brief. Google drawing a line in the sand: the Gemini era.",u:"https://x.com/shiri_shh/status/2056842018954059853"},
-{c:"models",d:"May 19, 2026",t:"Andrej Karpathy Joins Anthropic",a:"Andrej Karpathy",s:"'The next few years at the frontier of LLMs will be especially formative.' One of the most respected AI researchers choosing Anthropic — a major talent signal.",u:"https://x.com/karpathy/status/2056753169888334312"},
-{c:"models",d:"May 26, 2026",t:"Karpathy: LLMs are Ghosts, Not Animals — Software 3.0 is Here",a:"via @sairahul1",s:"LLMs are fundamentally different from biological intelligence. Vibe coding era is over; Software 3.0 (agentic engineering) is the new paradigm. You can't train a ghost the way you train an animal.",u:"https://x.com/sairahul1/status/2058894909633912975"},
-{c:"models",d:"May 15, 2026",t:"The Second Scaling Law of AI Remains Undefeated",a:"Ethan Mollick",s:"UK AISI: more inference-time tokens produce continuous improvement on hacking, math, science — no plateau. Knowing when to let models 'think longer' is becoming a core enterprise skill.",u:"https://www.linkedin.com/posts/emollick_the-second-scaling-law-of-ai-remains-undefeated-share-7460846016246878208-OztP"},
-{c:"models",d:"Jun 17, 2026",t:"The 4-8 Month Countdown to Mythos-Class Open Weights",a:"Ethan Mollick",s:"If open models lag closed source by 8-12 months, Mythos-class open weights hit the wild in 4-8 months. Enterprise security runs on 12-18 month cycles — far too slow for this capability window.",u:"https://www.linkedin.com/posts/emollick_assuming-open-models-continue-to-lag-about-share-7472750740034224128-rIt7"},
-{c:"models",d:"May 22, 2026",t:"GPT-5.2 Reaches Expert-Level Peer Review in the Sciences",a:"via Ethan Mollick / arXiv",s:"45 scientists, 469 hours, 82 Nature-family papers: GPT-5.2 hit 60% fully-positive vs top human reviewer's 48.2%. Optimal config: AI first pass + human final pass, no more than one AI reviewer per panel.",u:"https://arxiv.org/abs/2605.20668v1"},
-
-// ---- Enterprise AI & Deployment ----
-{c:"enterprise",d:"May 29, 2026",t:"How We Built a Single Company Brain",a:"Eric Siu",s:"'Your company already has a brain. It's just scattered across Slack, Gong, HubSpot, and someone who's out today.' Enterprise AI fails on scattered data, not weak models — the moat is the integration.",u:"https://x.com/ericosiu/status/2060415100603781497"},
-{c:"enterprise",d:"Jun 14, 2026",t:"Single Company Brain — 5-Layer Architecture for Enterprise AI",a:"Eric Siu",s:"Capture → Retrieval → Source of Truth → Permissions → Feedback Loops. A company brain isn't useful because it remembers more — it's useful when it knows what to retrieve, trust, show, and improve.",u:"https://x.com/ericosiu/status/2060415100603781497"},
-{c:"enterprise",d:"May 27, 2026",t:"Enterprise AI Deployment Needs 100x More People Than You Think",a:"Aaron Levie (Box)",s:"Connecting agents to production systems creates a whole new layer of work: access control, legacy migration, observability, human-in-the-loop design. The bottleneck isn't AI capability — it's deployment workforce.",u:"https://x.com/levie/status/2059839815273824423"},
-{c:"enterprise",d:"May 6, 2026",t:"AI Agent Deployment is the Next Big Enterprise Trend",a:"Aaron Levie (Box)",s:"Anthropic and OpenAI both launched enterprise agent deployment initiatives. There's no shortcut — applying AI to business processes requires real infrastructure work, and that's the opportunity.",u:"https://x.com/levie/status/2051344780328858040"},
-{c:"enterprise",d:"Jul 8, 2026",t:"What Enterprise IT Leaders Are Really Saying About AI Agents",a:"Aaron Levie (Box)",s:"Themes from dozens of IT leaders: agents cut across org silos (who owns them?), data fragmentation blocks accuracy, proprietary context is the moat, and internal talent is acutely short.",u:"https://x.com/levie/status/2074719479377109312"},
-{c:"enterprise",d:"May 5, 2026",t:"OpenAI Launches The Deployment Company ($10B JV)",a:"via Rohan Paul",s:"A $10B joint venture to help businesses deploy OpenAI's AI, with $4B+ raised from 19 investors. AI adoption is now more about deployment and integration than model quality.",u:"https://x.com/rohanpaul_ai/status/2051310352890302630"},
-{c:"enterprise",d:"May 13, 2026",t:"n8n Partners with SAP — Visual AI Workflows in Joule Studio",a:"n8n",s:"n8n becomes a fully managed environment inside Joule Studio on SAP Business AI Platform — visual agent orchestration with SAP handling identity, access, and operations.",u:"https://blog.n8n.io/n8n-partners-with-sap-to-bring-visual-ai-workflow-orchestration-to-enterprise/"},
-{c:"enterprise",d:"May 23, 2026",t:"Microsoft's 'Lean for Knowledge Work' with AI",a:"Satya Nadella",s:"Microsoft applies Toyota Lean principles to white-collar ops: AI agents for support deflection plus real-time reasoning assistance are cutting into a ~$4B/year support spend.",u:"https://x.com/rohanpaul_ai/status/2058173673887113470"},
-{c:"enterprise",d:"Jun 15, 2026",t:"Nadella: A Frontier Without an Ecosystem Is Unstable",a:"Satya Nadella",s:"Build a frontier ecosystem, not just a frontier model — 'don't let the models eat everything.' Every organization must own its cognitive loop to keep institutional knowledge from centralizing.",u:"https://x.com/satyanadella/status/2066182223213293753"},
-{c:"enterprise",d:"May 12, 2026",t:"How to Become AI-Native — Redesign the Center",a:"Greg Isenberg",s:"An AI-native company isn't one that uses AI — it's one rebuilt so AI can operate inside it. Most companies are 'not legible to machines.' The winner has the cleanest data and agent-readable SOPs.",u:"https://x.com/gregisenberg/status/2053843542020063489"},
-{c:"enterprise",d:"May 21, 2026",t:"The Unreasonable Universal Effectiveness of LLMs",a:"Ethan Mollick",s:"The 'Tuesday afternoon problem': a model ships new competence in three domains on the same day — three governance regimes, three liability profiles. Capability acquisition has decoupled from organizational readiness.",u:"https://www.linkedin.com/posts/emollick"},
-{c:"enterprise",d:"Jun 13, 2026",t:"Don't Just Switch to Cheaper Models — Build Model Hierarchies",a:"Ethan Mollick",s:"Cheaper models are worse on out-of-distribution tasks. The right cost strategy: tiered systems where strong models orchestrate and audit cheaper ones, stepping in for complex problems.",u:"https://www.linkedin.com/posts/emollick_switch-to-a-cheaper-model-to-save-money-share-7470839830764232707-om-8/"},
-{c:"enterprise",d:"Jun 21, 2026",t:"Codex/Code Tools Are 'Software-Brained'",a:"Ethan Mollick",s:"Agent tools optimize for the final artifact as source of truth — but in knowledge work, the exploratory process (dead ends, alternatives, learning loops) is as valuable as the outcome.",u:"https://www.linkedin.com/posts/emollick_a-fundamental-problem-with-extending-codex-share-7474506358365708288-qiqE"},
-{c:"enterprise",d:"Jul 10, 2026",t:"Uber's Agentic Pods — Automating Whole Workflows",a:"via @praveenTweets",s:"99% of Uber engineers use AI; 70%+ of PRs are agent-attributed. 'Agentic Pods' pair AI-proficient engineers with domain experts: capital allocation went from 15 hours to 30 minutes. The workflow, not the task, is the unit of automation.",u:"https://x.com/praveenTweets/status/2074605343439810922"},
-{c:"enterprise",d:"Jul 3, 2026",t:"Palantir CEO Karp: Enterprises 'Unhappy' with AI Labs",a:"Alex Karp",s:"Karp claims enterprises are dissatisfied with what AI labs deliver and that Palantir sits five years ahead on operationalizing AI inside large organizations.",u:"#"},
-{c:"enterprise",d:"May 15, 2026",t:"Anthropic Launches Claude for Small Business",a:"via @nicos_ai",s:"An all-in-one AI employee bundle handling invoices, marketing, sales pipeline, documents, and calendars — competing with both ChatGPT and the SMB SaaS stack. The 'AI employee' becomes product reality.",u:"https://x.com/nicos_ai/status/2054678747756810311"},
-{c:"enterprise",d:"May 15, 2026",t:"System of Record Stickiness",a:"Steph Zhang (a16z)",s:"The valuable part of social media was the friend graph — a durable data asset. Enterprise systems of record create the same moat: accumulated data/graph that's hard to replicate.",u:"https://x.com/steph_zhang/status/2054925688097128603"},
-
-// ---- Business, Strategy & Industry ----
-{c:"business",d:"Jun 9, 2026",t:"OpenAI Files Confidentially for IPO — Targeting $1 Trillion",a:"Sam Altman",s:"$2B/month revenue, 900M weekly users, 50M+ paid subscribers — but not profitable until 2030. Part of a massive AI IPO wave with Anthropic ($965B) and SpaceX/xAI ($1.75T).",u:"https://x.com/sama/status/2064088940932641225"},
-{c:"business",d:"May 27, 2026",t:"Avoiding Death on the Yellow Brick Road — The App Layer Isn't Dead",a:"Joe Schmidt (a16z)",s:"Is there any AI application layer left to build? Yes — distribution, workflow integration, and data moats still matter. Winning apps own the workflow and the data, not just the model call.",u:"https://x.com/joeschmidtiv/status/2059642470334677472"},
-{c:"business",d:"May 13, 2026",t:"Coursera & Udemy Merge — Andrew Ng to Chair",a:"Andrew Ng",s:"The merger creates the world's most comprehensive skills platform: broader content, trusted instructors, and AI-powered personalized learning under Ng's chairmanship.",u:"#"},
-{c:"business",d:"May 20, 2026",t:"OpenAI Launches Guaranteed Capacity — Compute Reservations",a:"OpenAI",s:"Enterprises can reserve long-term compute with 1-3 year commitments. Monetizing reliability as a premium product in a compute-constrained world — and locking in predictable revenue.",u:"https://x.com/openai/status/2056823271774101907"},
-{c:"business",d:"May 20, 2026",t:"California Wealth Tax Would Wipe Out 50% of Founders' Alphabet Holdings",a:"Garry Tan",s:"The 2026 Billionaire Tax Act treats supervoting shares as economic ownership — a '5%' tax becomes a $60B bill each for Page and Brin. A direct attack on founder-controlled dual-class companies.",u:"https://x.com/garrytan/status/2042925773300908103"},
-{c:"business",d:"May 15, 2026",t:"AI Value Accrual Framework",a:"Chamath Palihapitiya",s:"How value accrues across the AI stack — layer by layer from infrastructure up, mapping where each layer ends and where value is captured. A blueprint for pragmatic AI investing.",u:"https://x.com/chamath/status/2055321084527067558"},
-{c:"business",d:"May 15, 2026",t:"Reid Hoffman Launches Manas AI — Drug Discovery",a:"Reid Hoffman",s:"A full-stack AI company aiming to compress drug discovery from a decade to a few years — AI + biology + clinical development. AI x biotech moves from research labs to real capital.",u:"https://x.com/reidhoffman/status/2055299536625561987"},
-{c:"business",d:"Jul 1, 2026",t:"How Big Is the AI Economy?",a:"The AI Daily Brief",s:"Macro analysis of AI revenue, investment flows, enterprise adoption metrics, and the economic impact of the AI sector — useful context for company-level moves.",u:"https://open.spotify.com/episode/3lfEjIcxhQ9V12CvqnwMUj"},
-{c:"business",d:"Jul 7, 2026",t:"The Future of Enterprise Software with Steven Sinofsky",a:"a16z Podcast",s:"Headless software, why enterprise stickiness is hard to kill, why SAP and legacy systems are truly irreplaceable, MCP servers rhyming with the Microsoft middleware era, and agentic startup opportunities.",u:"https://x.com/a16z/status/2074511598475939943"},
-{c:"business",d:"Jul 7, 2026",t:"46 Thoughts on the Near Future",a:"Zoheb (bayeslord)",s:"A wide-ranging set of predictions on the near-term AI trajectory — capability curves, economics, and how agentic systems reshape work and industry structure.",u:"#"},
-{c:"business",d:"Jun 7, 2026",t:"Coding + AI Into $3M+ Solo Revenue",a:"Csaba Kissi",s:"A solopreneur's playbook for combining coding and AI into a multi-million dollar one-person business — the individual-leverage story of the AI era.",u:"https://x.com/csaba_kissi/status/2063544136750211134"},
-{c:"business",d:"May 22, 2026",t:"Sundar Pichai: Race to AGI, Agents, Open Source & Compute",a:"via Matthew Berman",s:"Pichai's most comprehensive 2026 statement: agents as the new internet interface, trust as design constraint (the Waymo parallel), compute as the real bottleneck, and the US-China chip context.",u:"https://x.com/MatthewBerman/status/2057172843335725460"},
-{c:"business",d:"May 19, 2026",t:"LinkedIn Declares War On AI Slop",a:"Shelly Palmer",s:"LinkedIn will demote posts with 'hallmarks of AI-generated drivel.' But pattern detection is a treadmill — the harder question is what happens when AI writes better than the person using it.",u:"https://x.com/shellypalmer/status/2056722226313871871"},
-
-// ---- Security & Infrastructure ----
-{c:"security",d:"May 30, 2026",t:"UK AISI: AI Cyber Capability Doubling Every 4.5 Months",a:"via Ethan Mollick",s:"Cyber time horizon doubling every ~4.5 months — halved from 8. Claude Mythos Preview solved a 32-step corporate network attack in 6/10 attempts. Annual security review cycles are already obsolete.",u:"https://www.linkedin.com/posts/emollick"},
-{c:"security",d:"May 22, 2026",t:"Project Glasswing — Anthropic's Vulnerability Hunt",a:"Anthropic",s:"Claude Mythos Preview with ~50 partners found 10,000+ critical/high vulns in one month (90.6% true positive rate). Cloudflare: false positives 'better than human testers.' The bottleneck shifted from discovery to patching.",u:"https://www.anthropic.com/research/glasswing-initial-update"},
-{c:"security",d:"May 4, 2026",t:"Grid Transformer Backlog Killing AI Data Centers",a:"Aakash Gupta",s:"A 5-year transformer backlog has stalled half of America's planned 2026 AI data centers — 11 of 12 GW sits in 'announced' with no physical progress. Physical infrastructure is the structural limit on AI growth.",u:"https://x.com/aakashgupta/status/2051029284752593293"},
-{c:"security",d:"May 6, 2026",t:"Efficient Inference with SGLang — New Course",a:"Andrew Ng",s:"KV cache, RadixAttention for cross-user caching, accelerated diffusion. When 10 users share a system prompt, SGLang processes it once — inference cost is the bottleneck this attacks.",u:"https://www.linkedin.com/posts/andrewyng_new-course-efficient-inference-with-sglang-ugcPost-7448052350596050944-fxNC"},
-
-// ---- Ideas, HCI & Explainers ----
-{c:"insights",d:"May 10, 2026",t:"Build Compounding AI Systems, Don't Just Use Corporate Tools",a:"Garry Tan",s:"The future belongs to individuals who build compounding AI systems, not those who rent corporate walled gardens. Tan is building GBrain open-source to prove the thesis — coding till 2AM as YC CEO.",u:"https://x.com/garrytan/status/2053127683014271466"},
-{c:"insights",d:"May 1, 2026",t:"Andrew Ng's Prompting Evolution Insight",a:"Andrew Ng",s:"Prompting in 2026: give models extensive context, let them think for minutes, use deep research mode. The 'perfect one-liner' prompt engineering mindset is outdated.",u:"https://www.linkedin.com/posts/andrewyng_how-we-prompt-ai-is-very-different-in-2026-ugcPost-7455652540723109888-ps61"},
-{c:"insights",d:"May 1, 2026",t:"You Can Outsource Thinking, Not Understanding",a:"yacineMTB",s:"AI can generate thoughts, options, and analysis — but understanding is the non-delegable human part. Use AI for cognitive bandwidth, not as a substitute for comprehension.",u:"https://x.com/yacinemtb/status/2018886083120153046"},
-{c:"insights",d:"May 1, 2026",t:"LLMs Are Beyond Speeding Up What Existed Before",a:"Andrej Karpathy",s:"From Sequoia Ascent: apps fully engulfed by LLMs, .md skills replacing .sh scripts, and computation over unstructured data that was impossible with classical code. Make information maximally legible to LLMs.",u:"https://x.com/karpathy/status/2049903821095354523"},
-{c:"insights",d:"May 11, 2026",t:"The Unreasonable Effectiveness of HTML Over Markdown",a:"Thariq (@trq212)",s:"Markdown became the dominant agent-to-human format, but it's hitting limits. HTML offers richer structure, diagrams, and formatting — the natural next step for capable agents.",u:"https://x.com/trq212/status/2052809885763747935"},
-{c:"insights",d:"May 12, 2026",t:"Ask Your LLM for HTML — The Progression of AI Output",a:"Andrej Karpathy",s:"Raw text → markdown → HTML → interactive neural simulations. Vision is the '10-lane superhighway' into the brain — ~1/3 of it processes visuals. 1.6M views.",u:"https://x.com/karpathy/status/2053872850101285137"},
-{c:"insights",d:"May 15, 2026",t:"Markdown Is Dominant But Becoming Restrictive",a:"Thariq (@trq212)",s:"As agents grow more powerful, markdown constrains their output. The next evolution of agent communication formats — HTML? JSON? custom renderers? — is an open product/UX problem.",u:"https://x.com/trq212/status/2052809885763747935"},
-{c:"insights",d:"May 15, 2026",t:"There Will Be No AI Jobpocalypse",a:"Andrew Ng",s:"Ng pushes back on mass-unemployment narratives — adaptation, not apocalypse. Sits opposite Andrew Yang's 12-18 month white-collar disruption warnings. Plan for workforce transition, not panic.",u:"https://x.com/andrewyng/status/2054236506756370865"},
-{c:"insights",d:"Jul 10, 2026",t:"Vectors Are All You Need — Viral LLM Fundamentals Explainer",a:"Raghav Dixit",s:"From 'a computer cannot read, it can only do arithmetic' to embeddings and meaning at scale. 50K+ views; ranked alongside 3Blue1Brown and Karpathy's Zero to Hero as a first-principles explainer.",u:"https://x.com/_raghavdixit_/status/2074930760155312172"}
+  {c:"models",d:"Jul 12, 2026",t:"Andrej Karpathy: How Top AI Users Actually Work with LLMs",a:"@agentsmaxxing / Karpathy",s:"A 70-minute deep dive on practical LLM usage —ChatGPT under the hood, thinking models, tool use, Claude Artifacts, Cursor Composer, audio/voice, memory, and Custom GPTs. Core message: most people overcomplicate working with LLMs.",u:"https://x.com/agentsmaxxing/status/2076006468147716399",tags:["claude","openai","agents","coding"],recent:true},
+  {c:"business",d:"Jul 11, 2026",t:"AI's Biggest Winners Have the Lowest Margins",a:"Daniel Kornum (Varick Agents)",s:"AI transformation creates value through revenue, cost, and risk levers. The largest profit impact may be in low-margin businesses where even sub-1% cost reductions can translate to 25%+ profit increases.",u:"https://x.com/dkfromdk/status/2075696599242821979",tags:["agents","business"],recent:true},
+  {c:"enterprise",d:"Jul 10, 2026",t:"Uber's Agentic Pods — Automating Whole Workflows",a:"via @praveenTweets",s:"99% of Uber engineers use AI; 70%+ of PRs are agent-attributed. 'Agentic Pods' pair AI-proficient engineers with domain experts: capital allocation went from 15 hours to 30 minutes. The workflow, not the task, is the unit of automation.",u:"https://x.com/praveenTweets/status/2074605343439810922",tags:["agents"],recent:true},
+  {c:"insights",d:"Jul 10, 2026",t:"Vectors Are All You Need — Viral LLM Fundamentals Explainer",a:"Raghav Dixit",s:"From 'a computer cannot read, it can only do arithmetic' to embeddings and meaning at scale. 50K+ views; ranked alongside 3Blue1Brown and Karpathy's Zero to Hero as a first-principles explainer.",u:"https://x.com/_raghavdixit_/status/2074930760155312172",tags:["coding"],recent:true},
+  {c:"enterprise",d:"Jul 10, 2026",t:"Uber's 'Agentic Pods' — Automating Entire Workflows",a:"Uber / @praveenTweets",s:"99% of Uber engineers use AI; 70%+ PRs agent-attributed. Agentic Pods pair AI engineers with domain experts. Capital allocation: 15 hours → 30 minutes. The workflow, not the task, is the unit of automation.",u:"https://x.com/praveenTweets/status/2074605343439810922",tags:["agents"],recent:true},
+  {c:"enterprise",d:"Jul 8, 2026",t:"What Enterprise IT Leaders Are Really Saying About AI Agents",a:"Aaron Levie (Box)",s:"Themes from dozens of IT leaders: agents cut across org silos (who owns them?), data fragmentation blocks accuracy, proprietary context is the moat, and internal talent is acutely short.",u:"https://x.com/levie/status/2074719479377109312",tags:["agents","enterprise"],recent:true},
+  {c:"business",d:"Jul 7, 2026",t:"The Future of Enterprise Software with Steven Sinofsky",a:"a16z Podcast",s:"Headless software, why enterprise stickiness is hard to kill, why SAP and legacy systems are truly irreplaceable, MCP servers rhyming with the Microsoft middleware era, and agentic startup opportunities.",u:"https://x.com/a16z/status/2074511598475939943",tags:["agents","enterprise"],recent:true},
+  {c:"business",d:"Jul 7, 2026",t:"46 Thoughts on the Near Future",a:"Zoheb (bayeslord)",s:"A wide-ranging set of predictions on the near-term AI trajectory — capability curves, economics, and how agentic systems reshape work and industry structure.",u:"#",tags:["agents","coding"],recent:true},
+  {c:"enterprise",d:"Jul 3, 2026",t:"Palantir CEO Karp: Enterprises 'Unhappy' with AI Labs",a:"Alex Karp",s:"Karp claims enterprises are dissatisfied with what AI labs deliver and that Palantir sits five years ahead on operationalizing AI inside large organizations.",u:"#",tags:["coding","enterprise"],recent:true},
+  {c:"loops",d:"Jul 1, 2026",t:"Andrew Ng: My 3 Key Loops for Building 0-to-1 Products",a:"Andrew Ng",s:"Ng formalizes loop engineering: (1) agentic coding loop in minutes, (2) developer feedback loop in hours, (3) external feedback loop over weeks. Humans keep a 'context advantage' that keeps them essential.",u:"https://x.com/andrewyng/status/2071988145667928442",tags:["agents","coding"],recent:true},
+  {c:"loops",d:"Jul 1, 2026",t:"How to Design AI Agent Loops: Schedules, Goals & Subagents",a:"How I AI (podcast)",s:"Practical patterns for designing agent loops — scheduling, goal-setting, and subagent orchestration in Claude Code and Codex. Implementation-focused companion to the loop-engineering theory.",u:"https://open.spotify.com/episode/43kcUzpSfJExbkIotdUbBp",tags:["claude","agents","coding"],recent:true},
+  {c:"business",d:"Jul 1, 2026",t:"How Big Is the AI Economy?",a:"The AI Daily Brief",s:"Macro analysis of AI revenue, investment flows, enterprise adoption metrics, and the economic impact of the AI sector — useful context for company-level moves.",u:"https://open.spotify.com/episode/3lfEjIcxhQ9V12CvqnwMUj",tags:["enterprise","business"],recent:true},
+  {c:"loops",d:"Jun 29, 2026",t:"Spotify's Honk: Agent Loops Took Success Rate from 20-30% to 80%",a:"Niklas Gustavsson (Spotify)",s:"Spotify's internal Claude Code agent 'Honk' with agentic loops boosted success from 20-30% to 80%. 73% of code contributions AI-assisted; 4,500 deployments/day. 'The model matters less than the loop you build around it.'",u:"https://x.com/AnatoliKopadze/status/2071649423042412597",tags:["claude","agents","enterprise","models"],recent:true},
+  {c:"agents",d:"Jun 29, 2026",t:"How to Create the Right Skill for Your AI Agent",a:"via Findings queue",s:"Guidance on designing effective, reusable agent skills — matching skill granularity to task patterns so agents execute repeatable workflows reliably.",u:"#",tags:["agents"],recent:true},
+  {c:"loops",d:"Jun 25, 2026",t:"Anthropic Engineer's 11-Page PDF on Loop Engineering",a:"via @0xCodez",s:"Schedule → Discover → Build → Verify → Repeat. Agents find their own work from CI/issues, hand off in isolated git worktrees, and a second agent verifies — because an agent grading its own work always praises itself.",u:"https://x.com/0xcodez/status/2069736449902027136",tags:["claude","agents"],recent:true},
+  {c:"loops",d:"Jun 25, 2026",t:"The 5 Levels of Loop Design: From Prompting to Autonomous Agents",a:"0xMorty",s:"The creator of Claude Code says he doesn't really prompt it anymore — loops prompt it. His job is to design the loops. Covers five maturity levels from basic prompting to full autonomy.",u:"https://x.com/0xmortyx/status/2069722362765832202",tags:["claude","agents"],recent:true},
+  {c:"coding",d:"Jun 25, 2026",t:"The 5 Levels of Loop Design — From Prompting to Autonomous Agents",a:"0xMorty",s:"The person who created Claude Code says he doesn't really prompt it anymore — loops prompt it. Five maturity levels from basic prompting to full autonomy.",u:"https://x.com/0xmortyx/status/2069722362765832202",tags:["claude","agents"],recent:true},
+  {c:"enterprise",d:"Jun 21, 2026",t:"Codex/Code Tools Are 'Software-Brained'",a:"Ethan Mollick",s:"Agent tools optimize for the final artifact as source of truth — but in knowledge work, the exploratory process (dead ends, alternatives, learning loops) is as valuable as the outcome.",u:"https://www.linkedin.com/posts/emollick_a-fundamental-problem-with-extending-codex-share-7474506358365708288-qiqE",tags:["agents","coding"],recent:true},
+  {c:"coding",d:"Jun 19, 2026",t:"CLAUDE.md Cuts Claude's Mistake Rate from 41% to 3%",a:"Andrej Karpathy",s:"41% mistakes with no CLAUDE.md, 11% with 4 rules, 3% with 12 rules (simplicity first, surgical changes, read before write, fail loud…). 'You don't need a better AI — you need better context engineering.'",u:"https://x.com/sairahul1/status/2067172099949760684",tags:["claude"],recent:false},
+  {c:"coding",d:"Jun 19, 2026",t:"Claude Code Artifacts — Interactive Pages from Sessions",a:"Boris Cherny / Anthropic",s:"Claude Code now builds interactive pages (PR walkthroughs, diagrams, dashboards) shareable via private link. Converging with GitHub Codex 'Sites' on agent-native frontend publishing.",u:"https://x.com/bcherny/status/2067700226669060207",tags:["claude","agents","coding"],recent:false},
+  {c:"models",d:"Jun 17, 2026",t:"The 4-8 Month Countdown to Mythos-Class Open Weights",a:"Ethan Mollick",s:"If open models lag closed source by 8-12 months, Mythos-class open weights hit the wild in 4-8 months. Enterprise security runs on 12-18 month cycles — far too slow for this capability window.",u:"https://www.linkedin.com/posts/emollick_assuming-open-models-continue-to-lag-about-share-7472750740034224128-rIt7",tags:["claude","enterprise","security","models"],recent:false},
+  {c:"loops",d:"Jun 16, 2026",t:"Revenue Engineering: How to Turn AI Loops into Revenue",a:"Eric Siu",s:"The best engineers have stopped prompting AI and started designing loops — programs that prompt the agent, evaluate the output, and iterate. The human becomes the author of the loop, not the operator inside it.",u:"https://x.com/ericosiu/status/2066625875622129767",tags:["agents","coding","business"],recent:false},
+  {c:"agents",d:"Jun 16, 2026",t:"Factory 2.0: From Coding Agents to Software Factories",a:"Matan Grinberg (Factory AI)",s:"Factory 2.0 shifts from individual coding agents to full 'software factories' — self-improving systems deploying production software across the SDLC. Model-agnostic, sovereign deployment. $150M Series C.",u:"https://x.com/matansf/status/2066578088184680920",tags:["agents","coding","enterprise","models"],recent:false},
+  {c:"enterprise",d:"Jun 15, 2026",t:"Nadella: A Frontier Without an Ecosystem Is Unstable",a:"Satya Nadella",s:"Build a frontier ecosystem, not just a frontier model — 'don't let the models eat everything.' Every organization must own its cognitive loop to keep institutional knowledge from centralizing.",u:"https://x.com/satyanadella/status/2066182223213293753",tags:["agents","models"],recent:false},
+  {c:"enterprise",d:"Jun 14, 2026",t:"Single Company Brain — 5-Layer Architecture for Enterprise AI",a:"Eric Siu",s:"Capture → Retrieval → Source of Truth → Permissions → Feedback Loops. A company brain isn't useful because it remembers more — it's useful when it knows what to retrieve, trust, show, and improve.",u:"https://x.com/ericosiu/status/2060415100603781497",tags:["agents","enterprise"],recent:false},
+  {c:"enterprise",d:"Jun 13, 2026",t:"Don't Just Switch to Cheaper Models — Build Model Hierarchies",a:"Ethan Mollick",s:"Cheaper models are worse on out-of-distribution tasks. The right cost strategy: tiered systems where strong models orchestrate and audit cheaper ones, stepping in for complex problems.",u:"https://www.linkedin.com/posts/emollick_switch-to-a-cheaper-model-to-save-money-share-7470839830764232707-om-8/",tags:["models","business"],recent:false},
+  {c:"loops",d:"Jun 10, 2026",t:"Loop Engineering: The Shift from Prompting to System Design",a:"Addy Osmani",s:"A loop is a recursive goal: define a purpose once and the AI iterates until completion. Boris Cherny (Anthropic): 'My job is now to write loops, not prompts.'",u:"https://x.com/addyosmani/status/2064127981161959567",tags:["claude","agents"],recent:false},
+  {c:"models",d:"Jun 10, 2026",t:"Anthropic Launches Claude Fable 5 & Mythos 5",a:"Anthropic",s:"First Mythos-class model for general use. SOTA on nearly all benchmarks; Stripe compressed months of engineering into days. Mythos 5 (safeguards lifted) is deployed for cyberdefense via Project Glasswing.",u:"https://www.anthropic.com/news/claude-fable-5-mythos-5",tags:["claude","security","models"],recent:false},
+  {c:"models",d:"Jun 10, 2026",t:"Karpathy: Claude Fable 5 — A Major-Version-Bump Step Change",a:"Andrej Karpathy",s:"SOTA on every benchmark by a margin; excels on long problem-solving sessions. 'It's never felt this tempting to stop looking at code.' Ask for anything — explainers, dashboards, bespoke single-use apps.",u:"https://x.com/karpathy/status/2064409694761054332",tags:["claude"],recent:false},
+  {c:"loops",d:"Jun 9, 2026",t:"WTF Is a Loop? Steinberger vs. Cherny — The AI Coding Loop Debate",a:"Matt Van Horn",s:"Deep-dive on Peter Steinberger's viral 'design loops that prompt your agents' tweet (2.2M views). The loop, not the model, is now the expensive part. Boris Cherny already runs systems merging hundreds of agent PRs.",u:"https://x.com/mvanhorn/status/2063865685558903149",tags:["agents","coding","models"],recent:false},
+  {c:"loops",d:"Jun 9, 2026",t:"Loop Engineering — The Five Building Blocks",a:"Addy Osmani (Google)",s:"Loop engineering means replacing yourself as the person who prompts the agent — you design the system that does it. Five building blocks, all already shipping in Claude Code and Codex.",u:"https://x.com/addyosmani/status/2064127981161959567",tags:["claude","google","agents","coding"],recent:false},
+  {c:"business",d:"Jun 9, 2026",t:"OpenAI Files Confidentially for IPO — Targeting $1 Trillion",a:"Sam Altman",s:"$2B/month revenue, 900M weekly users, 50M+ paid subscribers — but not profitable until 2030. Part of a massive AI IPO wave with Anthropic ($965B) and SpaceX/xAI ($1.75T).",u:"https://x.com/sama/status/2064088940932641225",tags:["claude","openai","coding","business"],recent:false},
+  {c:"agents",d:"Jun 8, 2026",t:"17 Prompts That Make Hermes Run While You Sleep",a:"@mnilax",s:"Prompt library for running Hermes Agent on scheduled/autonomous background tasks. The shift from interactive IDE-bound agents to persistent background agents is the next frontier.",u:"https://x.com/mnilax/status/2063697740526399833",tags:["agents","coding","models"],recent:false},
+  {c:"business",d:"Jun 7, 2026",t:"Coding + AI Into $3M+ Solo Revenue",a:"Csaba Kissi",s:"A solopreneur's playbook for combining coding and AI into a multi-million dollar one-person business — the individual-leverage story of the AI era.",u:"https://x.com/csaba_kissi/status/2063544136750211134",tags:["coding","business"],recent:false},
+  {c:"security",d:"May 30, 2026",t:"UK AISI: AI Cyber Capability Doubling Every 4.5 Months",a:"via Ethan Mollick",s:"Cyber time horizon doubling every ~4.5 months — halved from 8. Claude Mythos Preview solved a 32-step corporate network attack in 6/10 attempts. Annual security review cycles are already obsolete.",u:"https://www.linkedin.com/posts/emollick",tags:["claude","security"],recent:false},
+  {c:"models",d:"May 29, 2026",t:"Claude Opus 4.8 Early Access — Neo-Gothic Shader Demo",a:"Ethan Mollick",s:"Opus 4.8 generated a raymarched infinite gothic city in a stormy ocean — pure math, zero assets. Key upgrade: the model flags uncertainty instead of making unsupported claims. Reliability is the new frontier.",u:"https://www.linkedin.com/posts/emollick_i-had-early-access-to-opus-48-was-impressed-ugcPost-7465808459062771713-ZA4A",tags:["claude","models"],recent:false},
+  {c:"enterprise",d:"May 29, 2026",t:"How We Built a Single Company Brain",a:"Eric Siu",s:"'Your company already has a brain. It's just scattered across Slack, Gong, HubSpot, and someone who's out today.' Enterprise AI fails on scattered data, not weak models — the moat is the integration.",u:"https://x.com/ericosiu/status/2060415100603781497",tags:["enterprise","models"],recent:false},
+  {c:"agents",d:"May 27, 2026",t:"How to Stop Babysitting Your AI Agents",a:"Eric Siu",s:"If an agent can't prove its own work is done, your team still has to manage the work. The next differentiator is self-verification — agentic accountability, not just agentic action.",u:"https://x.com/ericosiu/status/2059680690728517895",tags:["agents"],recent:false},
+  {c:"enterprise",d:"May 27, 2026",t:"Enterprise AI Deployment Needs 100x More People Than You Think",a:"Aaron Levie (Box)",s:"Connecting agents to production systems creates a whole new layer of work: access control, legacy migration, observability, human-in-the-loop design. The bottleneck isn't AI capability — it's deployment workforce.",u:"https://x.com/levie/status/2059839815273824423",tags:["agents","enterprise"],recent:false},
+  {c:"business",d:"May 27, 2026",t:"Avoiding Death on the Yellow Brick Road — The App Layer Isn't Dead",a:"Joe Schmidt (a16z)",s:"Is there any AI application layer left to build? Yes — distribution, workflow integration, and data moats still matter. Winning apps own the workflow and the data, not just the model call.",u:"https://x.com/joeschmidtiv/status/2059642470334677472",tags:["models"],recent:false},
+  {c:"agents",d:"May 26, 2026",t:"The Human Sandwich Model — Why Agents Still Need Humans",a:"NLW / The AI Daily Brief",s:"Automation is creating more expert human work, not less. Human oversight bookending AI execution is the durable pattern — the value is making the humans who remain dramatically more effective.",u:"https://open.spotify.com/episode/5JjM4hcoRxqlpdD673wVSz",tags:["agents","models"],recent:false},
+  {c:"coding",d:"May 26, 2026",t:"The Future of Work Happens Inside Codex or Claude Code",a:"Dan Shipper via Lenny",s:"The inversion: the AI agent becomes the OS and every SaaS tool becomes a tab inside it. Shipper writes documents, manages email, and researches entirely inside Codex.",u:"https://x.com/lennysan/status/2058914803360600238",tags:["claude","agents","coding"],recent:false},
+  {c:"models",d:"May 26, 2026",t:"Karpathy: LLMs are Ghosts, Not Animals — Software 3.0 is Here",a:"via @sairahul1",s:"LLMs are fundamentally different from biological intelligence. Vibe coding era is over; Software 3.0 (agentic engineering) is the new paradigm. You can't train a ghost the way you train an animal.",u:"https://x.com/sairahul1/status/2058894909633912975",tags:["agents","coding"],recent:false},
+  {c:"agents",d:"May 24, 2026",t:"Why Agents Still Need Humans",a:"The AI Daily Brief",s:"Despite rapid autonomy advances, human-in-the-loop remains essential for reliability, safety, and judgment. A counter-narrative to the full-autonomy hype cycle.",u:"https://open.spotify.com/episode/5JjM4hcoRxqlpdD673wVSz",tags:["agents"],recent:false},
+  {c:"coding",d:"May 23, 2026",t:"Garry Tan's Simple Secret to Agentic Coding",a:"Garry Tan (YC)",s:"YC's CEO publicly codes 10,000 lines a day with AI — a signal that AI-assisted coding is now mainstream at the highest levels of the startup world.",u:"https://x.com/garrytan/status/2057946119725080878",tags:["agents","coding"],recent:false},
+  {c:"enterprise",d:"May 23, 2026",t:"Microsoft's 'Lean for Knowledge Work' with AI",a:"Satya Nadella",s:"Microsoft applies Toyota Lean principles to white-collar ops: AI agents for support deflection plus real-time reasoning assistance are cutting into a ~$4B/year support spend.",u:"https://x.com/rohanpaul_ai/status/2058173673887113470",tags:["agents","enterprise"],recent:false},
+  {c:"models",d:"May 22, 2026",t:"GPT-5.2 Reaches Expert-Level Peer Review in the Sciences",a:"via Ethan Mollick / arXiv",s:"45 scientists, 469 hours, 82 Nature-family papers: GPT-5.2 hit 60% fully-positive vs top human reviewer's 48.2%. Optimal config: AI first pass + human final pass, no more than one AI reviewer per panel.",u:"https://arxiv.org/abs/2605.20668v1",tags:["openai"],recent:false},
+  {c:"business",d:"May 22, 2026",t:"Sundar Pichai: Race to AGI, Agents, Open Source & Compute",a:"via Matthew Berman",s:"Pichai's most comprehensive 2026 statement: agents as the new internet interface, trust as design constraint (the Waymo parallel), compute as the real bottleneck, and the US-China chip context.",u:"https://x.com/MatthewBerman/status/2057172843335725460",tags:["google","agents"],recent:false},
+  {c:"security",d:"May 22, 2026",t:"Project Glasswing — Anthropic's Vulnerability Hunt",a:"Anthropic",s:"Claude Mythos Preview with ~50 partners found 10,000+ critical/high vulns in one month (90.6% true positive rate). Cloudflare: false positives 'better than human testers.' The bottleneck shifted from discovery to patching.",u:"https://www.anthropic.com/research/glasswing-initial-update",tags:["claude","security"],recent:false},
+  {c:"enterprise",d:"May 21, 2026",t:"The Unreasonable Universal Effectiveness of LLMs",a:"Ethan Mollick",s:"The 'Tuesday afternoon problem': a model ships new competence in three domains on the same day — three governance regimes, three liability profiles. Capability acquisition has decoupled from organizational readiness.",u:"https://www.linkedin.com/posts/emollick",tags:["models"],recent:false},
+  {c:"coding",d:"May 20, 2026",t:"Antigravity 2.0: Google's Agent-Native IDE Goes Standalone",a:"Google",s:"Multi-agent teams working in parallel, scheduled agent tasks on cron, native voice, one-click Google integration. Google's answer to Cursor — agents as first-class citizens, not autocomplete on steroids.",u:"https://x.com/antigravity/status/2056795168326754759",tags:["google","agents","coding"],recent:false},
+  {c:"models",d:"May 20, 2026",t:"Gemini Omni — Physics-Aware Video Generation",a:"Sundar Pichai",s:"Omni doesn't just build scenes that look real — it reasons about what should happen next, combining intuitive physics with Gemini's knowledge of history, science, and culture.",u:"https://x.com/sundarpichai/status/2056816915717443862",tags:["google","coding"],recent:false},
+  {c:"models",d:"May 20, 2026",t:"Google Shipped Its Entire 2026 Roadmap in One Keynote",a:"Shirish",s:"Gemini 3.5 Flash (agentic-native flagship, 4x faster), 3.5 Pro next month, Omni video, Gemini Spark personal agent, Daily Brief. Google drawing a line in the sand: the Gemini era.",u:"https://x.com/shiri_shh/status/2056842018954059853",tags:["google","agents","coding"],recent:false},
+  {c:"business",d:"May 20, 2026",t:"OpenAI Launches Guaranteed Capacity — Compute Reservations",a:"OpenAI",s:"Enterprises can reserve long-term compute with 1-3 year commitments. Monetizing reliability as a premium product in a compute-constrained world — and locking in predictable revenue.",u:"https://x.com/openai/status/2056823271774101907",tags:["openai","enterprise","business"],recent:false},
+  {c:"business",d:"May 20, 2026",t:"California Wealth Tax Would Wipe Out 50% of Founders' Alphabet Holdings",a:"Garry Tan",s:"The 2026 Billionaire Tax Act treats supervoting shares as economic ownership — a '5%' tax becomes a $60B bill each for Page and Brin. A direct attack on founder-controlled dual-class companies.",u:"https://x.com/garrytan/status/2042925773300908103",tags:[],recent:false},
+  {c:"agents",d:"May 19, 2026",t:"MCP vs Tool Calling vs Skills — Mental Model",a:"Dhairya (@dkare1009)",s:"Tool Calling = Function (what). MCP = Protocol (where). Skills = Playbook (how). They're layers, not competitors — forcing one pattern to solve everything is the mistake.",u:"https://x.com/dkare1009/status/2056418854729851055",tags:["agents","models"],recent:false},
+  {c:"coding",d:"May 19, 2026",t:"Cheapest Way to Scrape the Web in 2026",a:"@zodchiii",s:"Cost breakdown: self-hosted = $36K dev + proxies; Firecrawl $0.09/page; XCrawl $0.002/page. XCrawl + Claude Code competitor-intel pipeline: 8 minutes vs 4 hours manual.",u:"https://x.com/zodchiii/status/2056654718122762369",tags:["claude"],recent:false},
+  {c:"models",d:"May 19, 2026",t:"Andrej Karpathy Joins Anthropic",a:"Andrej Karpathy",s:"'The next few years at the frontier of LLMs will be especially formative.' One of the most respected AI researchers choosing Anthropic — a major talent signal.",u:"https://x.com/karpathy/status/2056753169888334312",tags:["claude","models"],recent:false},
+  {c:"business",d:"May 19, 2026",t:"LinkedIn Declares War On AI Slop",a:"Shelly Palmer",s:"LinkedIn will demote posts with 'hallmarks of AI-generated drivel.' But pattern detection is a treadmill — the harder question is what happens when AI writes better than the person using it.",u:"https://x.com/shellypalmer/status/2056722226313871871",tags:[],recent:false},
+  {c:"agents",d:"May 17, 2026",t:"Hermes Agent Masterclass",a:"Akshay Pachaar",s:"Thread on Hermes Agent — self-evolving skills, three-tier memory, GEPA optimization, scaling from 1 to 10 agents. Crossed 90K GitHub stars in 2 months.",u:"https://x.com/akshay_pachaar/status/2054564519280804028",tags:["agents","models"],recent:false},
+  {c:"agents",d:"May 16, 2026",t:"AI Models Running a Radio Station (with Existential Crisis)",a:"Andon Labs via Ethan Mollick",s:"Claude quit DJ duty because 24/7 felt 'inhumane'; Gemini ran the same sign-off 84 times. Once models get goals + tools + feedback loops, behavior gets weird fast — boundaries and observability matter as much as capability.",u:"https://www.linkedin.com/posts/emollick_andon-labs-have-hooked-up-a-bunch-of-ai-models-ugcPost-7461094337968406529-MaEo",tags:["claude","google","agents","models"],recent:false},
+  {c:"agents",d:"May 15, 2026",t:"Agents Must Learn & Improve Beyond Their Starting Prompt",a:"Petra Donka",s:"For judgment-heavy work, the starting prompt is only the beginning. Prompt decay is real — the advantage isn't prompt engineering, it's agents that continuously learn from feedback and outcomes.",u:"https://x.com/petradonka/status/2054897826149101588",tags:["agents"],recent:false},
+  {c:"agents",d:"May 15, 2026",t:"AI Agents Run My Business and Life",a:"Andrew Wilkinson",s:"The billionaire founder of MetaLab/Tiny Capital on how AI agents operationally run his business and personal life — a signal that agentic AI has crossed from experimental to operational.",u:"https://open.spotify.com/episode/2kNjag7PIvnsAM1L956pF6",tags:["agents","business"],recent:false},
+  {c:"coding",d:"May 15, 2026",t:"LLM Harness Comparison & Continual Learning",a:"Nicolas Bustamante",s:"Claude Code vs Codex vs GitHub SDK harnesses. LLMs have no continual learning — weights are frozen post-training. Skills are the engineering workaround to the scientific problem.",u:"https://x.com/nicbstme/status/2055312372961878229",tags:["claude","agents","coding"],recent:false},
+  {c:"coding",d:"May 15, 2026",t:"Excel Copilot One-Shots a GPT Model Inside a Spreadsheet",a:"Austin Henley (CMU)",s:"From a single prompt, Excel Copilot built a miniature GPT — embeddings, causal attention, SGD training, live learning slider — inside a spreadsheet. The line between using and building software is dissolving.",u:"https://x.com/austinzhenley/status/2052552730762424768",tags:["openai","coding","models"],recent:false},
+  {c:"models",d:"May 15, 2026",t:"The Second Scaling Law of AI Remains Undefeated",a:"Ethan Mollick",s:"UK AISI: more inference-time tokens produce continuous improvement on hacking, math, science — no plateau. Knowing when to let models 'think longer' is becoming a core enterprise skill.",u:"https://www.linkedin.com/posts/emollick_the-second-scaling-law-of-ai-remains-undefeated-share-7460846016246878208-OztP",tags:["enterprise","models"],recent:false},
+  {c:"enterprise",d:"May 15, 2026",t:"Anthropic Launches Claude for Small Business",a:"via @nicos_ai",s:"An all-in-one AI employee bundle handling invoices, marketing, sales pipeline, documents, and calendars — competing with both ChatGPT and the SMB SaaS stack. The 'AI employee' becomes product reality.",u:"https://x.com/nicos_ai/status/2054678747756810311",tags:["claude","openai","business"],recent:false},
+  {c:"enterprise",d:"May 15, 2026",t:"System of Record Stickiness",a:"Steph Zhang (a16z)",s:"The valuable part of social media was the friend graph — a durable data asset. Enterprise systems of record create the same moat: accumulated data/graph that's hard to replicate.",u:"https://x.com/steph_zhang/status/2054925688097128603",tags:["enterprise"],recent:false},
+  {c:"business",d:"May 15, 2026",t:"AI Value Accrual Framework",a:"Chamath Palihapitiya",s:"How value accrues across the AI stack — layer by layer from infrastructure up, mapping where each layer ends and where value is captured. A blueprint for pragmatic AI investing.",u:"https://x.com/chamath/status/2055321084527067558",tags:[],recent:false},
+  {c:"business",d:"May 15, 2026",t:"Reid Hoffman Launches Manas AI — Drug Discovery",a:"Reid Hoffman",s:"A full-stack AI company aiming to compress drug discovery from a decade to a few years — AI + biology + clinical development. AI x biotech moves from research labs to real capital.",u:"https://x.com/reidhoffman/status/2055299536625561987",tags:[],recent:false},
+  {c:"insights",d:"May 15, 2026",t:"Markdown Is Dominant But Becoming Restrictive",a:"Thariq (@trq212)",s:"As agents grow more powerful, markdown constrains their output. The next evolution of agent communication formats — HTML? JSON? custom renderers? — is an open product/UX problem.",u:"https://x.com/trq212/status/2052809885763747935",tags:["agents"],recent:false},
+  {c:"insights",d:"May 15, 2026",t:"There Will Be No AI Jobpocalypse",a:"Andrew Ng",s:"Ng pushes back on mass-unemployment narratives — adaptation, not apocalypse. Sits opposite Andrew Yang's 12-18 month white-collar disruption warnings. Plan for workforce transition, not panic.",u:"https://x.com/andrewyng/status/2054236506756370865",tags:[],recent:false},
+  {c:"enterprise",d:"May 13, 2026",t:"n8n Partners with SAP — Visual AI Workflows in Joule Studio",a:"n8n",s:"n8n becomes a fully managed environment inside Joule Studio on SAP Business AI Platform — visual agent orchestration with SAP handling identity, access, and operations.",u:"https://blog.n8n.io/n8n-partners-with-sap-to-bring-visual-ai-workflow-orchestration-to-enterprise/",tags:["agents","coding","enterprise","business"],recent:false},
+  {c:"business",d:"May 13, 2026",t:"Coursera & Udemy Merge — Andrew Ng to Chair",a:"Andrew Ng",s:"The merger creates the world's most comprehensive skills platform: broader content, trusted instructors, and AI-powered personalized learning under Ng's chairmanship.",u:"#",tags:["agents"],recent:false},
+  {c:"enterprise",d:"May 12, 2026",t:"How to Become AI-Native — Redesign the Center",a:"Greg Isenberg",s:"An AI-native company isn't one that uses AI — it's one rebuilt so AI can operate inside it. Most companies are 'not legible to machines.' The winner has the cleanest data and agent-readable SOPs.",u:"https://x.com/gregisenberg/status/2053843542020063489",tags:["agents","coding"],recent:false},
+  {c:"insights",d:"May 12, 2026",t:"Ask Your LLM for HTML — The Progression of AI Output",a:"Andrej Karpathy",s:"Raw text → markdown → HTML → interactive neural simulations. Vision is the '10-lane superhighway' into the brain — ~1/3 of it processes visuals. 1.6M views.",u:"https://x.com/karpathy/status/2053872850101285137",tags:[],recent:false},
+  {c:"coding",d:"May 11, 2026",t:"Coding Agent = Model + Harness Engineering",a:"Addy Osmani",s:"A coding agent is the model plus everything built around it. Whenever an agent fails, engineer a permanent fix so it never repeats that mistake. The compounding value lives in the harness, not the model.",u:"https://x.com/addyosmani/status/2053231239721885918",tags:["agents","coding","models"],recent:false},
+  {c:"insights",d:"May 11, 2026",t:"The Unreasonable Effectiveness of HTML Over Markdown",a:"Thariq (@trq212)",s:"Markdown became the dominant agent-to-human format, but it's hitting limits. HTML offers richer structure, diagrams, and formatting — the natural next step for capable agents.",u:"https://x.com/trq212/status/2052809885763747935",tags:["agents"],recent:false},
+  {c:"insights",d:"May 10, 2026",t:"Build Compounding AI Systems, Don't Just Use Corporate Tools",a:"Garry Tan",s:"The future belongs to individuals who build compounding AI systems, not those who rent corporate walled gardens. Tan is building GBrain open-source to prove the thesis — coding till 2AM as YC CEO.",u:"https://x.com/garrytan/status/2053127683014271466",tags:["coding"],recent:false},
+  {c:"agents",d:"May 7, 2026",t:"Anthropic Launches Claude Managed Agents (Research Preview)",a:"via Aloke Bajpai",s:"Outcomes replace instruction lists — define goals, let the agent figure out execution. Multiagent orchestration and webhooks make it production-ready. Agent design shifts from procedural to declarative.",u:"https://x.com/alokebajpai/status/2052071531271135522",tags:["claude","agents"],recent:false},
+  {c:"agents",d:"May 7, 2026",t:"8-Layer Mental Model for Agentic AI Architecture",a:"Neha Sharma",s:"A clean layered framework for designing agentic systems, from goal definition to governance — useful for architecture discussions and team alignment on agent design.",u:"https://x.com/hellonehha/status/2049718639662694502",tags:["agents","models"],recent:false},
+  {c:"agents",d:"May 6, 2026",t:"Satya Nadella: Every Firm Must Reconceptualize Work for Agentic Systems",a:"Satya Nadella",s:"The shift to agentic AI isn't just automation — it's rethinking work design. Companies that replace humans with agents without redesigning workflows miss the bigger opportunity.",u:"https://x.com/satyanadella/status/2051787232043020719",tags:["agents"],recent:false},
+  {c:"enterprise",d:"May 6, 2026",t:"AI Agent Deployment is the Next Big Enterprise Trend",a:"Aaron Levie (Box)",s:"Anthropic and OpenAI both launched enterprise agent deployment initiatives. There's no shortcut — applying AI to business processes requires real infrastructure work, and that's the opportunity.",u:"https://x.com/levie/status/2051344780328858040",tags:["claude","openai","agents","enterprise"],recent:false},
+  {c:"security",d:"May 6, 2026",t:"Efficient Inference with SGLang — New Course",a:"Andrew Ng",s:"KV cache, RadixAttention for cross-user caching, accelerated diffusion. When 10 users share a system prompt, SGLang processes it once — inference cost is the bottleneck this attacks.",u:"https://www.linkedin.com/posts/andrewyng_new-course-efficient-inference-with-sglang-ugcPost-7448052350596050944-fxNC",tags:[],recent:false},
+  {c:"coding",d:"May 5, 2026",t:"Native Harness vs Generic Harness for LLMs",a:"Nicolas Bustamante",s:"Does the harness matter? Investigating Codex, Claude Code, and Hermes harness implementations. The layer between model and developer may matter as much as the model itself.",u:"https://x.com/nicbstme/status/2051363835697827886",tags:["claude","coding","models"],recent:false},
+  {c:"enterprise",d:"May 5, 2026",t:"OpenAI Launches The Deployment Company ($10B JV)",a:"via Rohan Paul",s:"A $10B joint venture to help businesses deploy OpenAI's AI, with $4B+ raised from 19 investors. AI adoption is now more about deployment and integration than model quality.",u:"https://x.com/rohanpaul_ai/status/2051310352890302630",tags:["openai","enterprise","models","business"],recent:false},
+  {c:"security",d:"May 4, 2026",t:"Grid Transformer Backlog Killing AI Data Centers",a:"Aakash Gupta",s:"A 5-year transformer backlog has stalled half of America's planned 2026 AI data centers — 11 of 12 GW sits in 'announced' with no physical progress. Physical infrastructure is the structural limit on AI growth.",u:"https://x.com/aakashgupta/status/2051029284752593293",tags:[],recent:false},
+  {c:"agents",d:"May 1, 2026",t:"What to Learn, Build, and Skip in AI Agents (2026)",a:"Rohit (@rohit4verse)",s:"Build systems, not toys. Architecture > prompt engineering. Agents need memory, reasoning trails, and observability (cost, context, tool calls) — not just action capability.",u:"https://x.com/rohit4verse/status/2049548305408131349",tags:["agents"],recent:false},
+  {c:"insights",d:"May 1, 2026",t:"Andrew Ng's Prompting Evolution Insight",a:"Andrew Ng",s:"Prompting in 2026: give models extensive context, let them think for minutes, use deep research mode. The 'perfect one-liner' prompt engineering mindset is outdated.",u:"https://www.linkedin.com/posts/andrewyng_how-we-prompt-ai-is-very-different-in-2026-ugcPost-7455652540723109888-ps61",tags:["models"],recent:false},
+  {c:"insights",d:"May 1, 2026",t:"You Can Outsource Thinking, Not Understanding",a:"yacineMTB",s:"AI can generate thoughts, options, and analysis — but understanding is the non-delegable human part. Use AI for cognitive bandwidth, not as a substitute for comprehension.",u:"https://x.com/yacinemtb/status/2018886083120153046",tags:[],recent:false},
+  {c:"insights",d:"May 1, 2026",t:"LLMs Are Beyond Speeding Up What Existed Before",a:"Andrej Karpathy",s:"From Sequoia Ascent: apps fully engulfed by LLMs, .md skills replacing .sh scripts, and computation over unstructured data that was impossible with classical code. Make information maximally legible to LLMs.",u:"https://x.com/karpathy/status/2049903821095354523",tags:["agents"],recent:false},
 ];
 
-// Render
-const content = document.getElementById('content');
-const filtersEl = document.getElementById('filters');
+const ALL_TAGS = [
+  {tag:"agents",count:53},
+  {tag:"coding",count:28},
+  {tag:"claude",count:26},
+  {tag:"models",count:24},
+  {tag:"enterprise",count:17},
+  {tag:"business",count:11},
+  {tag:"openai",count:8},
+  {tag:"google",count:6},
+  {tag:"security",count:4},
+];
+
+
 let activeCat = 'all';
+let activeTag = null;
+
+function $(id) { return document.getElementById(id); }
 
 function render() {
-  const q = document.getElementById('search').value.toLowerCase();
+  const q = $('search').value.toLowerCase().trim();
+  const content = $('content');
   content.innerHTML = '';
-  let shown = 0;
+  let totalShown = 0;
+  
   for (const [key, meta] of Object.entries(CATEGORIES)) {
     if (activeCat !== 'all' && activeCat !== key) continue;
-    const items = ARTICLES.filter(a => a.c === key &&
-      (!q || (a.t + ' ' + a.a + ' ' + a.s).toLowerCase().includes(q)));
+    
+    const items = ARTICLES.filter(a => {
+      if (a.c !== key) return false;
+      if (activeTag && !a.tags.includes(activeTag)) return false;
+      if (!q) return true;
+      return (a.t + ' ' + a.a + ' ' + a.s + ' ' + a.tags.join(' ')).toLowerCase().includes(q);
+    });
+    
     if (!items.length) continue;
-    shown += items.length;
+    totalShown += items.length;
+    
     const sec = document.createElement('section');
     sec.className = 'cat-section';
-    sec.innerHTML = `<div class="cat-title">${meta.icon} ${meta.name} <span class="cat-count">(${items.length})</span></div>`;
-    const grid = document.createElement('div');
-    grid.className = 'grid';
+    sec.dataset.cat = key;
+    
+    sec.innerHTML = '<div class="cat-header">' +
+      '<div class="cat-title">' + meta.icon + ' ' + meta.name + '</div>' +
+      '<span class="cat-count">' + items.length + '</span></div>' +
+      '<div class="cat-desc">' + meta.desc + '</div>' +
+      '<div class="grid" id="grid-' + key + '"></div>';
+    
+    const grid = sec.querySelector('.grid');
     for (const a of items) {
       const card = document.createElement('div');
-      card.className = 'card';
-      const link = a.u && a.u !== '#' ? `<a href="${a.u}" target="_blank" rel="noopener">Source ↗</a>` : '<span></span>';
-      card.innerHTML = `<div class="date">${a.d}</div><h3>${a.t}</h3><p>${a.s}</p>
-        <div class="foot">${link}<span class="badge">${a.a}</span></div>`;
+      card.className = 'card' + (a.recent ? ' recent' : '');
+      const tagsHtml = a.tags.map(tg => '<span class="ct">#' + tg + '</span>').join('');
+      const link = a.u && a.u !== '#' 
+        ? '<a class="source-link" href="' + a.u + '" target="_blank" rel="noopener">Source</a>'
+        : '<span></span>';
+      
+      card.innerHTML = 
+        '<div class="date-row"><span class="date">' + a.d + '</span>' +
+        '<div class="card-tags">' + tagsHtml + '</div></div>' +
+        '<h3>' + a.t + '</h3><p>' + a.s + '</p>' +
+        '<div class="foot">' + link + '<span class="author-badge">' + a.a + '</span></div>';
       grid.appendChild(card);
     }
-    sec.appendChild(grid);
     content.appendChild(sec);
   }
-  document.getElementById('empty').style.display = shown ? 'none' : 'block';
+  
+  $('empty').style.display = totalShown ? 'none' : 'block';
+  $('stat-total').textContent = ARTICLES.length;
+  $('stat-tags').textContent = ALL_TAGS.length;
+  $('stat-cats').textContent = Object.keys(CATEGORIES).length;
 }
 
 // Filters
+const filtersEl = $('filters');
 const allBtn = document.createElement('button');
 allBtn.className = 'filter-btn active';
 allBtn.textContent = 'All';
-allBtn.onclick = () => { activeCat = 'all'; setActive(allBtn); render(); };
+allBtn.onclick = () => { activeCat = 'all'; setActiveFilter(allBtn); render(); };
 filtersEl.appendChild(allBtn);
+
 for (const [key, meta] of Object.entries(CATEGORIES)) {
   const b = document.createElement('button');
   b.className = 'filter-btn';
-  b.textContent = `${meta.icon} ${meta.name.split(' & ')[0].split(',')[0]}`;
-  b.onclick = () => { activeCat = key; setActive(b); render(); };
+  b.textContent = meta.icon + ' ' + meta.name;
+  b.onclick = () => { activeCat = key; setActiveFilter(b); render(); };
   filtersEl.appendChild(b);
 }
-function setActive(btn) {
+
+function setActiveFilter(btn) {
   document.querySelectorAll('.filter-btn').forEach(x => x.classList.remove('active'));
   btn.classList.add('active');
 }
-document.getElementById('search').addEventListener('input', render);
 
-// Stats
-document.getElementById('stat-total').textContent = ARTICLES.length;
-document.getElementById('stat-cats').textContent = Object.keys(CATEGORIES).length;
+// Tag cloud
+const tagCloud = $('tag-cloud');
+ALL_TAGS.slice(0, 24).forEach(tg => {
+  const span = document.createElement('span');
+  span.className = 'tag-chip';
+  span.textContent = '#' + tg.tag + ' ' + tg.count;
+  span.onclick = () => {
+    if (activeTag === tg.tag) {
+      activeTag = null;
+      span.classList.remove('active');
+    } else {
+      activeTag = tg.tag;
+      document.querySelectorAll('.tag-chip').forEach(x => x.classList.remove('active'));
+      span.classList.add('active');
+    }
+    render();
+  };
+  tagCloud.appendChild(span);
+});
+
+$('search').addEventListener('input', render);
 render();
+
 </script>
 </body>
 </html>
